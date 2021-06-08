@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "821817646082",
+    "project_id": "pet-diary-62edb",
+    "storage_bucket": "pet-diary-62edb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821817646082:android:9ae9b33bf544a73ba59b1b",
+        "android_client_info": {
+          "package_name": "com.yu.pet_diary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "821817646082-k6v6s1s141so36reu00v0kvqonuli22g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn3N2wzgj6SfgYoj2WqB_pkjjpUo-BC7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "821817646082-k6v6s1s141so36reu00v0kvqonuli22g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

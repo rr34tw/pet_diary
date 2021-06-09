@@ -16,9 +16,10 @@ class _SplashPageState extends State<SplashPage> {
     bool _check = (prefs.getBool('checked') ?? false); // init check as false
 
     if (_check) {
-      Navigator.of(context).pushReplacement(new MaterialPageRoute(
-          builder: (context) => new MyHomePage(title: '寵物日記')));
-      /*new MaterialPageRoute(builder: (context) => new IntroPage()));*/
+      Navigator.of(context).pushReplacement(
+          /*new MaterialPageRoute(
+    builder: (context) => new MyHomePage(title: '寵物日記')));*/
+          new MaterialPageRoute(builder: (context) => new IntroPage()));
     } else {
       await prefs.setBool('checked', true);
       Navigator.of(context).pushReplacement(

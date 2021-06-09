@@ -11,13 +11,15 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
-  var myPet;
-  bool catHasBeenPressed = false;
-  bool dogHasBeenPressed = false;
-  bool rabbitHasBeenPressed = false;
-  bool turtleHasBeenPressed = false;
-  bool othersHasBeenPressed = false;
-  bool petSelected = false;
+  String? _petType;
+  String? _petBreeds;
+  //var myPetType, myPetBreeds;
+
+  List<String> _default = [];
+  List<String> _dogBreeds = ['柯基', '臘腸', '吉娃娃', '馬爾濟斯', '拉不拉多'];
+  List<String> _catBreeds = ['虎斑', '金吉拉', '波斯貓', '橘貓', '玳瑁'];
+  List<String> _rabbitBreeds = ['道奇兔', '獅子兔', '家兔', '銀狐'];
+  List<String> _turtleBreeds = ['巴西龜', '象龜', '蛇龜'];
 
   void _onIntroEnd(context) {
     Navigator.of(context).pushReplacement(new MaterialPageRoute(
@@ -54,7 +56,7 @@ class _IntroPageState extends State<IntroPage> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         ),
-        /* Page 2: Select Pet Type */
+        /* Page 2: Select Pet Type And Breeds */
         Card(
           color: HexColor("#455A64"),
           child: Column(
@@ -69,213 +71,56 @@ class _IntroPageState extends State<IntroPage> {
                   letterSpacing: 1.5,
                 ),
               ),
+              SizedBox(height: 40),
+              Container(
+                color: HexColor('#C4C4C4'),
+                width: 250,
+                height: 40,
+                alignment: Alignment.center,
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: _petType,
+                  onChanged: (value) {
+                    setState(() {
+                      _petType = value;
+                    });
+                    _default.clear();
+                    switch (_petType) {
+                      case "狗狗":
+                        _default.addAll(_dogBreeds);
+                        break;
+                      case "貓咪":
+                        _default.addAll(_catBreeds);
+                        break;
+                      case "兔子":
+                        _default.addAll(_rabbitBreeds);
+                        break;
+                      case "烏龜":
+                        _default.addAll(_turtleBreeds);
+                        break;
+                      case "其他":
+                        print("自行輸入");
+                        break;
+                      default:
+                        _default.clear();
+                    }
+                  },
+                  items: <String>['狗狗', '貓咪', '兔子', '烏龜', '其他']
+                      .map<DropdownMenuItem<String>>((String type) {
+                    return DropdownMenuItem<String>(
+                      value: type,
+                      child: new Text(type),
+                    );
+                  }).toList(),
+                  hint: Text(
+                    "選擇寵物類型",
+                    style: TextStyle(
+                      color: HexColor('#000000'),
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(height: 60),
-              /* Select Type As Dog */
-              ClipRect(
-                child: Tooltip(
-                  message: '選擇狗狗',
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: dogHasBeenPressed
-                            ? HexColor('#725B53')
-                            : HexColor('#C4C4C4'),
-                        padding: const EdgeInsets.all(3.0),
-                        primary: dogHasBeenPressed
-                            ? HexColor('#FFFFFF')
-                            : HexColor('#000000'),
-                        textStyle: const TextStyle(fontSize: 20),
-                        minimumSize: Size(200, 35)),
-                    onPressed: () => {
-                      setState(() {
-                        if (petSelected == true) {
-                          if (dogHasBeenPressed == true) {
-                            print('unselected dog');
-                            dogHasBeenPressed = false;
-                            petSelected = false;
-                          } else {
-                            print('other type has been select');
-                          }
-                        } else {
-                          if (dogHasBeenPressed == false) {
-                            print('select dog');
-                            dogHasBeenPressed = true;
-                            petSelected = true;
-                          }
-                        }
-                      })
-                    },
-                    child: Text('狗狗'),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              /* Select Type As Cat */
-              ClipRect(
-                child: Tooltip(
-                  message: '選擇貓咪',
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: catHasBeenPressed
-                            ? HexColor('#725B53')
-                            : HexColor('#C4C4C4'),
-                        padding: const EdgeInsets.all(3.0),
-                        primary: catHasBeenPressed
-                            ? HexColor('#FFFFFF')
-                            : HexColor('#000000'),
-                        textStyle: const TextStyle(fontSize: 20),
-                        minimumSize: Size(200, 35)),
-                    onPressed: () => {
-                      setState(() {
-                        if (petSelected == true) {
-                          if (catHasBeenPressed == true) {
-                            print('unselected cat');
-                            catHasBeenPressed = false;
-                            petSelected = false;
-                          } else {
-                            print('other type has been select');
-                          }
-                        } else {
-                          if (catHasBeenPressed == false) {
-                            print('select cat');
-                            catHasBeenPressed = true;
-                            petSelected = true;
-                          }
-                        }
-                      })
-                    },
-                    child: Text('貓咪'),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              /* Select Type As Rabbit */
-              ClipRect(
-                child: Tooltip(
-                  message: '選擇兔子',
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: rabbitHasBeenPressed
-                            ? HexColor('#725B53')
-                            : HexColor('#C4C4C4'),
-                        padding: const EdgeInsets.all(3.0),
-                        primary: rabbitHasBeenPressed
-                            ? HexColor('#FFFFFF')
-                            : HexColor('#000000'),
-                        textStyle: const TextStyle(fontSize: 20),
-                        minimumSize: Size(200, 35)),
-                    onPressed: () => {
-                      setState(() {
-                        if (petSelected == true) {
-                          if (rabbitHasBeenPressed == true) {
-                            print('unselected rabbit');
-                            rabbitHasBeenPressed = false;
-                            petSelected = false;
-                          } else {
-                            print('other type has been select');
-                          }
-                        } else {
-                          if (rabbitHasBeenPressed == false) {
-                            print('select rabbit');
-                            rabbitHasBeenPressed = true;
-                            petSelected = true;
-                          }
-                        }
-                      })
-                    },
-                    child: Text('兔子'),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              /* Select Type As Turtle */
-              ClipRect(
-                child: Tooltip(
-                  message: '選擇烏龜',
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: turtleHasBeenPressed
-                            ? HexColor('#725B53')
-                            : HexColor('#C4C4C4'),
-                        padding: const EdgeInsets.all(3.0),
-                        primary: turtleHasBeenPressed
-                            ? HexColor('#FFFFFF')
-                            : HexColor('#000000'),
-                        textStyle: const TextStyle(fontSize: 20),
-                        minimumSize: Size(200, 35)),
-                    onPressed: () => {
-                      setState(() {
-                        if (petSelected == true) {
-                          if (turtleHasBeenPressed == true) {
-                            print('unselected turtle');
-                            turtleHasBeenPressed = false;
-                            petSelected = false;
-                          } else {
-                            print('other type has been select');
-                          }
-                        } else {
-                          if (turtleHasBeenPressed == false) {
-                            print('select turtle');
-                            turtleHasBeenPressed = true;
-                            petSelected = true;
-                          }
-                        }
-                      })
-                    },
-                    child: Text('烏龜'),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              /* Select Type As Others */
-              ClipRect(
-                child: Tooltip(
-                  message: '選擇其他',
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        backgroundColor: othersHasBeenPressed
-                            ? HexColor('#725B53')
-                            : HexColor('#C4C4C4'),
-                        padding: const EdgeInsets.all(3.0),
-                        primary: othersHasBeenPressed
-                            ? HexColor('#FFFFFF')
-                            : HexColor('#000000'),
-                        textStyle: const TextStyle(fontSize: 20),
-                        minimumSize: Size(200, 35)),
-                    onPressed: () => {
-                      setState(() {
-                        if (petSelected == true) {
-                          if (othersHasBeenPressed == true) {
-                            print('unselected others');
-                            othersHasBeenPressed = false;
-                            petSelected = false;
-                          } else {
-                            print('other type has been select');
-                          }
-                        } else {
-                          if (othersHasBeenPressed == false) {
-                            print('select others');
-                            othersHasBeenPressed = true;
-                            petSelected = true;
-                          }
-                        }
-                      })
-                    },
-                    child: Text('其他'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          margin: EdgeInsets.all(35.0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        ),
-        /* Page 3: Select Pet Breeds */
-        Card(
-          color: HexColor("#455A64"),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
               Text(
                 '請選擇您的寵物品種(花色)',
                 textAlign: TextAlign.center,
@@ -286,186 +131,42 @@ class _IntroPageState extends State<IntroPage> {
                   letterSpacing: 1.5,
                 ),
               ),
-              //SizedBox(height: 30),
-              dogHasBeenPressed
-                  ? Container(
-                      child: Column(
-                      children: <Widget>[
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇柯基',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('柯基'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇博美',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('博美'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇柴犬',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('柴犬'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇法鬥',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('法鬥'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇吉娃娃',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('吉娃娃'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇馬爾濟斯',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('馬爾濟斯'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇拉不拉多',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('拉不拉多'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇其他',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('其他'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ))
-                  : Container(),
-              catHasBeenPressed
-                  ? Container(
-                      child: Column(
-                      children: <Widget>[
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇虎斑',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('虎斑'),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ClipRect(
-                          child: Tooltip(
-                            message: '選擇賓士',
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor: HexColor('#C4C4C4'),
-                                  padding: const EdgeInsets.all(3.0),
-                                  primary: HexColor('#000000'),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                  minimumSize: Size(200, 35)),
-                              onPressed: () => {},
-                              child: Text('賓士'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ))
-                  : Container(),
+              SizedBox(height: 40),
+              Container(
+                color: HexColor('#C4C4C4'),
+                width: 250,
+                height: 40,
+                alignment: Alignment.center,
+                child: DropdownButton(
+                  hint: Text(
+                    "選擇寵物品種",
+                    style: TextStyle(
+                      color: HexColor('#000000'),
+                    ),
+                  ),
+                  value: _petBreeds,
+                  isExpanded: true,
+                  dropdownColor: HexColor('#C4C4C4'),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _petBreeds = value;
+                    });
+                  },
+                  items: _default.map<DropdownMenuItem<String>>((breeds) {
+                    return DropdownMenuItem<String>(
+                      value: breeds,
+                      child: new Text(breeds),
+                    );
+                  }).toList(),
+                ),
+              ),
             ],
           ),
           margin: EdgeInsets.all(35.0),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         ),
-        /* Page 4: Set Pet Information */
+        /* Page 3: Set Pet Information */
         Card(
           color: HexColor("#455A64"),
           child: Column(

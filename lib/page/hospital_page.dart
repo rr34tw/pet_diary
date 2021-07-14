@@ -4,7 +4,7 @@ class HospitalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("醫院"),
+      child: const Text("醫院"),
     );
   }
 }

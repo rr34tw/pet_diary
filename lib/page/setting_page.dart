@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_diary/common/theme.dart';
-import 'package:pet_diary/setting_page/setting_my_pet_page.dart';
+import 'setting_my_pet_page.dart';
 
 class SettingPage extends StatefulWidget {
   SettingPage({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('設定'),
+        title: const Text('設定'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -28,9 +28,9 @@ class _SettingPageState extends State<SettingPage> {
               child: Tooltip(
                 message: '編輯我的寵物',
                 child: ListTile(
-                  leading: Icon(Icons.pets),
-                  title: Text('我的寵物'),
-                  trailing: Icon(Icons.keyboard_arrow_right),
+                  leading: const Icon(Icons.pets),
+                  title: const Text('編輯我的寵物'),
+                  trailing: const Icon(Icons.keyboard_arrow_right),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -48,15 +48,15 @@ class _SettingPageState extends State<SettingPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: <Widget>[
-                    Text(
+                    const Text(
                       '通知設定',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20.0,
                       ),
                     ),
                     SwitchListTile(
-                        title: Text('聲音'),
+                        title: const Text('聲音'),
                         contentPadding: const EdgeInsets.all(0.0),
                         value: _isSoundSwitched,
                         onChanged: (value) {
@@ -65,7 +65,7 @@ class _SettingPageState extends State<SettingPage> {
                           });
                         }),
                     SwitchListTile(
-                        title: Text('振動'),
+                        title: const Text('振動'),
                         contentPadding: const EdgeInsets.all(0.0),
                         value: _isVibrationSwitched,
                         onChanged: (value) {
@@ -78,8 +78,8 @@ class _SettingPageState extends State<SettingPage> {
               ),
               margin: MyCardTheme.cardMargin,
               shape: RoundedRectangleBorder(
-                side:
-                    BorderSide(color: ColorSet.primaryLightColors, width: 2.0),
+                side: const BorderSide(
+                    color: ColorSet.primaryLightColors, width: 2.0),
                 borderRadius: BorderRadius.circular(5.0),
               ),
             ),

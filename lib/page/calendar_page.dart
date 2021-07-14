@@ -4,7 +4,7 @@ class CalendarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("日曆"),
+      child: const Text("日曆"),
     );
   }
 }

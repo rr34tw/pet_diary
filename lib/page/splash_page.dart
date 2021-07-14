@@ -19,7 +19,7 @@ class _SplashPageState extends State<SplashPage> {
       Navigator.of(context).pushReplacement(
     new MaterialPageRoute(
     builder: (context) => new MyHomePage(title: '寵物日記')));
-          /*new MaterialPageRoute(builder: (context) => new IntroPage()));*/
+    /*new MaterialPageRoute(builder: (context) => new IntroPage()));*/
     } else {
       await prefs.setBool('checked', true);
       Navigator.of(context).pushReplacement(

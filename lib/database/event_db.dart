@@ -79,4 +79,15 @@ class EventInfoDB {
       );
     });
   }
+
+  /* Show me what you got ! */
+  static Future<List<Map<String, Object?>>> showMeWhatUGot() async {
+    final db = await initDatabase();
+
+    List<Map<String, Object?>> records = await db.query('Event');
+
+    // print(records);
+
+    return records;
+  }
 }

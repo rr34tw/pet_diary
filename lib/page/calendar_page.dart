@@ -315,17 +315,17 @@ class _CalendarPageState extends State<CalendarPage> {
                           eventColor.toString(),
                           isAllDay == false ? 0 : 1,
                         );
-                        /* Add event to calendar */
-                        _dataSource.appointments!.add(Appointment(
+                        Appointment appointment = Appointment(
                           subject: eventNameController.text,
                           startTime: startDatetime,
                           endTime: endDateTime,
                           color: eventColor,
                           isAllDay: isAllDay,
-                        ));
+                        );
+                        /* Add event to calendar */
+                        _dataSource.appointments!.add(appointment);
                         _dataSource.notifyListeners(
-                            CalendarDataSourceAction.add,
-                            _dataSource.appointments!);
+                            CalendarDataSourceAction.add, [appointment]);
                       });
                     },
                     child: const Text('確定'),
@@ -360,7 +360,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           height: 20.0,
                         ),
                         Text(
-                          showEvent.subject,
+                          showEvent.id.toString(),
                           style: TextStyle(fontSize: 20.0),
                         ),
                         const SizedBox(
@@ -744,8 +744,8 @@ class _CalendarPageState extends State<CalendarPage> {
     setState(() {
       _dataSource.appointments!
           .removeAt(_dataSource.appointments!.indexOf(deleteEvent));
-      _dataSource.notifyListeners(
-          CalendarDataSourceAction.remove, <Appointment>[]..add(deleteEvent));
+      _dataSource
+          .notifyListeners(CalendarDataSourceAction.remove, [deleteEvent]);
     });
     Navigator.pop(context);
   }
@@ -788,13 +788,32 @@ class _CalendarPageState extends State<CalendarPage> {
         tooltip: '新增事件',
         backgroundColor: ColorSet.secondaryColors,
         onPressed: () {
-          setState(() {
-            eventNameController.text = '';
-            eventColor = Color(0xfff44336);
-            isAllDay = false;
-            startDatetime = DateTime.now();
-            endDateTime = DateTime.now().add(Duration(hours: 1));
-            _addEvent();
+          // setState(() {
+          //   eventNameController.text = '';
+          //   eventColor = Color(0xfff44336);
+          //   isAllDay = false;
+          //   startDatetime = DateTime.now();
+          //   endDateTime = DateTime.now().add(Duration(hours: 1));
+          //   _addEvent();
+          // });
+
+          Future<List<Map<String, Object?>>> a = EventInfoDB.showMeWhatUGot();
+          a.then((value) {
+            for (dynamic b in value) {
+              print(b);
+              Appointment appointment = Appointment(
+                id: b['id'],
+                subject: b['name'],
+                startTime: DateFormat('yyyy-MM-dd HH:mm').parse(b['startDate']),
+                endTime: DateFormat('yyyy-MM-dd HH:mm').parse(b['endDate']),
+                color: Color(0xfff44336),
+                isAllDay: b['isAllDay'] != 0,
+              );
+              /* Add event to calendar */
+              _dataSource.appointments!.add(appointment);
+              _dataSource
+                  .notifyListeners(CalendarDataSourceAction.add, [appointment]);
+            }
           });
         },
         child: Icon(

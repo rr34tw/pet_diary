@@ -65,7 +65,7 @@ jobs:
         with:
           flutter-version: '2.0.5'
       - run: flutter pub get
-      - run: flutter build web
+      - run: flutter build web --base-href=/pet_diary/
 #       - name: Deploy to gh-pages
 #         uses: peaceiris/actions-gh-pages@v3
 #         with:

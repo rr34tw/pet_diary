@@ -34,7 +34,6 @@ jobs:
         with:
           flutter-version: '2.0.5'
       - run: flutter pub get
-      - run: flutter test
       - run: flutter build apk
       - run: flutter build appbundle
   build-iOS:
@@ -48,7 +47,6 @@ jobs:
         with:
           flutter-version: '2.0.5'
       - run: flutter pub get
-      - run: flutter test
       - run: flutter build apk
       - run: flutter build ios --release --no-codesign
   build-web:
@@ -59,7 +57,6 @@ jobs:
         with:
           flutter-version: '2.0.5'
       - run: flutter pub get
-      - run: flutter test
       - run: flutter build web
   build-Windows:
     runs-on: windows-latest

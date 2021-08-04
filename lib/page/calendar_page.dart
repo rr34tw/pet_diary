@@ -17,21 +17,6 @@ class CalendarPage extends StatefulWidget {
   _CalendarPageState createState() => _CalendarPageState();
 }
 
-/* Database */
-class DB {
-  static void addEvent(String name, String startDate, String endDate,
-      String color, int isAllDay) async {
-    final newEvent = EventInfo(
-      name: name,
-      startDate: startDate,
-      endDate: endDate,
-      color: color,
-      isAllDay: isAllDay,
-    );
-    await EventInfoDB.insertEvent(newEvent);
-  }
-}
-
 /* Using for calendar event */
 class EventDataSource extends CalendarDataSource {
   EventDataSource(List<Appointment> source) {
@@ -81,7 +66,7 @@ class _CalendarPageState extends State<CalendarPage> {
     super.initState();
   }
 
-  _loadData(context) async {
+  void _loadData(context) async {
     SettingModel mySet = Provider.of<SettingModel>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -118,7 +103,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   /* Add event on calendar */
-  _addEvent() {
+  void _addEvent() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -342,42 +327,58 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      if (eventNameController.text == '') {
+                      // end date must late than start date
+                      if (startDatetime.isAfter(endDateTime)) {
                         Fluttertoast.showToast(
-                            msg: "請輸入事件名稱",
+                            msg: "開始時間不能比結束時間晚",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             backgroundColor: Colors.white,
                             textColor: Colors.black,
                             fontSize: 16.0);
                       } else {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        Appointment newEvent = Appointment(
-                          id: prefs.getInt('keyEventId'),
-                          subject: eventNameController.text,
-                          startTime: startDatetime,
-                          endTime: endDateTime,
-                          color: eventColor,
-                          isAllDay: isAllDay,
-                        );
-                        /* Add event to database */
-                        DB.addEvent(
-                          eventNameController.text,
-                          formattedDateAndTime.format(startDatetime).toString(),
-                          formattedDateAndTime.format(endDateTime).toString(),
-                          eventColor.toHex(),
-                          isAllDay == false ? 0 : 1,
-                        );
+                        if (eventNameController.text == '') {
+                          Fluttertoast.showToast(
+                              msg: "請輸入事件名稱",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.white,
+                              textColor: Colors.black,
+                              fontSize: 16.0);
+                        } else {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          Appointment newEvent = Appointment(
+                            id: prefs.getInt('keyEventId'),
+                            subject: eventNameController.text,
+                            startTime: startDatetime,
+                            endTime: endDateTime,
+                            color: eventColor,
+                            isAllDay: isAllDay,
+                          );
 
-                        /* Add event to calendar */
-                        _dataSource.appointments!.add(newEvent);
-                        _dataSource.notifyListeners(
-                            CalendarDataSourceAction.add, [newEvent]);
+                          /* Add event to database */
+                          EventInfoDB.insertEvent(EventInfo(
+                            name: eventNameController.text,
+                            startDate: formattedDateAndTime
+                                .format(startDatetime)
+                                .toString(),
+                            endDate: formattedDateAndTime
+                                .format(endDateTime)
+                                .toString(),
+                            color: eventColor.toHex(),
+                            isAllDay: isAllDay == false ? 0 : 1,
+                          ));
 
-                        eventId += 1;
-                        prefs.setInt('keyEventId', eventId);
-                        Navigator.pop(context, 'OK');
+                          /* Add event to calendar */
+                          _dataSource.appointments!.add(newEvent);
+                          _dataSource.notifyListeners(
+                              CalendarDataSourceAction.add, [newEvent]);
+
+                          eventId += 1;
+                          prefs.setInt('keyEventId', eventId);
+                          Navigator.pop(context, 'OK');
+                        }
                       }
                     },
                     child: const Text('確定'),
@@ -388,7 +389,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   /* Show event details on dialog */
-  _onTapShowEventDetails(CalendarTapDetails showEventDetails) {
+  void _onTapShowEventDetails(CalendarTapDetails showEventDetails) {
     if (showEventDetails.targetElement == CalendarElement.appointment) {
       Appointment showEvent = showEventDetails.appointments![0];
       showDialog(
@@ -455,7 +456,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   /* Show edit or delete event on dialog */
-  _onLongPressEditOrDelete(CalendarLongPressDetails editOrDeleteDetails) {
+  void _onLongPressEditOrDelete(CalendarLongPressDetails editOrDeleteDetails) {
     if (editOrDeleteDetails.targetElement == CalendarElement.appointment) {
       Appointment editOrDeleteEvent = editOrDeleteDetails.appointments![0];
       showDialog(
@@ -530,7 +531,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   /* Edit event on alert dialog */
-  _editEvent(CalendarLongPressDetails editEventDetails) {
+  void _editEvent(CalendarLongPressDetails editEventDetails) {
     Appointment editEvent = editEventDetails.appointments![0];
     showDialog(
         context: context,
@@ -757,56 +758,69 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      if (editEventNameController.text == '') {
+                      // end date must late than start date
+                      if (editStartDatetime.isAfter(editEndDateTime)) {
                         Fluttertoast.showToast(
-                            msg: "請輸入事件名稱",
+                            msg: "開始時間不能比結束時間晚",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             backgroundColor: Colors.white,
                             textColor: Colors.black,
                             fontSize: 16.0);
                       } else {
-                        /* Delete event than add new one */
-                        // Delete event in calendar
-                        _dataSource.appointments!.removeAt(
-                            _dataSource.appointments!.indexOf(editEvent));
-                        _dataSource.notifyListeners(
-                            CalendarDataSourceAction.remove, [editEvent]);
-                        // Delete event in database
-                        EventInfoDB.delete(int.parse(editEvent.id.toString()));
+                        if (editEventNameController.text == '') {
+                          Fluttertoast.showToast(
+                              msg: "請輸入事件名稱",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.white,
+                              textColor: Colors.black,
+                              fontSize: 16.0);
+                        } else {
+                          /* Delete event than add new one */
+                          // Delete event in calendar
+                          _dataSource.appointments!.removeAt(
+                              _dataSource.appointments!.indexOf(editEvent));
+                          _dataSource.notifyListeners(
+                              CalendarDataSourceAction.remove, [editEvent]);
+                          // Delete event in database
+                          EventInfoDB.deleteEvent(
+                              int.parse(editEvent.id.toString()));
 
-                        // Add event to calendar
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        Appointment editNewEvent = Appointment(
-                          id: prefs.getInt('keyEventId'),
-                          subject: editEventNameController.text,
-                          startTime: editStartDatetime,
-                          endTime: editEndDateTime,
-                          color: editEventColor,
-                          isAllDay: editIsAllDay,
-                        );
-                        _dataSource.appointments!.add(editNewEvent);
-                        _dataSource.notifyListeners(
-                            CalendarDataSourceAction.add, [editNewEvent]);
-                        // Add event to database
-                        DB.addEvent(
-                          editEventNameController.text,
-                          formattedDateAndTime
-                              .format(editStartDatetime)
-                              .toString(),
-                          formattedDateAndTime
-                              .format(editEndDateTime)
-                              .toString(),
-                          editEventColor.toHex(),
-                          editIsAllDay == false ? 0 : 1,
-                        );
+                          // Add event to calendar
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          Appointment editNewEvent = Appointment(
+                            id: prefs.getInt('keyEventId'),
+                            subject: editEventNameController.text,
+                            startTime: editStartDatetime,
+                            endTime: editEndDateTime,
+                            color: editEventColor,
+                            isAllDay: editIsAllDay,
+                          );
+                          _dataSource.appointments!.add(editNewEvent);
+                          _dataSource.notifyListeners(
+                              CalendarDataSourceAction.add, [editNewEvent]);
 
-                        eventId += 1;
-                        prefs.setInt('keyEventId', eventId);
-                        // back to page calendar
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst);
+                          // Add event to database
+                          EventInfoDB.insertEvent(EventInfo(
+                            name: editEventNameController.text,
+                            startDate: formattedDateAndTime
+                                .format(editStartDatetime)
+                                .toString(),
+                            endDate: formattedDateAndTime
+                                .format(editEndDateTime)
+                                .toString(),
+                            color: editEventColor.toHex(),
+                            isAllDay: editIsAllDay == false ? 0 : 1,
+                          ));
+
+                          eventId += 1;
+                          prefs.setInt('keyEventId', eventId);
+                          // back to calendar page
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                        }
                       }
                     },
                     child: const Text('確定'),
@@ -817,7 +831,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   /* Delete event on calendar */
-  _deleteEvent(CalendarLongPressDetails deleteEventDetails) {
+  void _deleteEvent(CalendarLongPressDetails deleteEventDetails) {
     Appointment deleteEvent = deleteEventDetails.appointments![0];
     setState(() {
       _dataSource.appointments!
@@ -825,7 +839,7 @@ class _CalendarPageState extends State<CalendarPage> {
       _dataSource
           .notifyListeners(CalendarDataSourceAction.remove, [deleteEvent]);
     });
-    EventInfoDB.delete(int.parse(deleteEvent.id.toString()));
+    EventInfoDB.deleteEvent(int.parse(deleteEvent.id.toString()));
     Navigator.pop(context);
   }
 
